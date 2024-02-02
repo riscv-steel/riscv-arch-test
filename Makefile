@@ -87,7 +87,7 @@ simulate:
 		run -C $(SUITEDIR)
 
 verify: simulate
-	riscv-test-env/verify.sh
+	./verify.sh
 
 postverify:
 ifeq ($(wildcard $(TARGETDIR)/$(RISCV_TARGET)/postverify.sh),)
