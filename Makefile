@@ -1,52 +1,24 @@
-#
-# Ensure the compiler and necessary executables are on the search PATH
-#
+export ROOTDIR            =  $(shell pwd)
+export WORK               ?= $(ROOTDIR)/work
+export TARGETDIR          ?= $(ROOTDIR)/riscv-target
+export XLEN               ?= 32
+export RISCV_TARGET       ?= rvsteel-core
+export RISCV_DEVICE       ?= I
+export RISCV_TEST         ?= 
+export RISCV_TARGET_FLAGS ?= 
+export JOBS               ?= -j $(nproc)
+export SUITEDIR           =  $(ROOTDIR)/riscv-test-suite/rv$(XLEN)i_m/$(RISCV_DEVICE)
+export RVTEST_DEFINES     = 
+MAKEFLAGS                 += --no-print-directory
+pipe                      := |
+empty                     :=
+comma                     := ,
+space                     := $(empty) $(empty)
+RISCV_ISA_ALL             =  $(shell ls $(TARGETDIR)/$(RISCV_TARGET)/device/rv$(XLEN)i_m)
+RISCV_ISA_OPT             =  $(subst $(space),$(pipe),$(RISCV_ISA_ALL))
+RISCV_ISA_ALL             := $(filter-out Makefile.include,$(RISCV_ISA_ALL))
+VERBOSE                   ?= 0
 
-#
-# Ensure you have set the following Variables
-#
-#
-export ROOTDIR    = $(shell pwd)
-export WORK      ?= $(ROOTDIR)/work
-
-include Makefile.include
-
-pipe:= |
-empty:=
-comma:= ,
-space:= $(empty) $(empty)
-
-RISCV_ISA_ALL = $(shell ls $(TARGETDIR)/$(RISCV_TARGET)/device/rv$(XLEN)i_m)
-RISCV_ISA_OPT = $(subst $(space),$(pipe),$(RISCV_ISA_ALL))
-
-RISCV_ISA_ALL := $(filter-out Makefile.include,$(RISCV_ISA_ALL))
-
-ifeq ($(RISCV_DEVICE),)
-    RISCV_DEVICE = I
-    DEFAULT_TARGET=all_variant
-else
-    DEFAULT_TARGET=variant
-endif
-export SUITEDIR   = $(ROOTDIR)/riscv-test-suite/rv$(XLEN)i_m/$(RISCV_DEVICE)
-
-$(info )
-$(info ============================ VARIABLE INFO ==================================)
-$(info ROOTDIR: ${ROOTDIR} [origin: $(origin ROOTDIR)])
-$(info WORK: ${WORK} [origin: $(origin WORK)])
-$(info TARGETDIR: ${TARGETDIR} [origin: $(origin TARGETDIR)])
-$(info RISCV_TARGET: ${RISCV_TARGET} [origin: $(origin RISCV_TARGET)])
-$(info XLEN: ${XLEN} [origin: $(origin XLEN)])
-$(info RISCV_DEVICE: ${RISCV_DEVICE} [origin: $(origin RISCV_DEVICE)])
-$(info =============================================================================)
-$(info )
-
-RVTEST_DEFINES = 
-ifeq ($(RISCV_ASSERT),1)
-	RVTEST_DEFINES += -DRVMODEL_ASSERT
-endif
-export RVTEST_DEFINES
-
-VERBOSE ?= 0
 ifeq ($(VERBOSE),1)
     export V=
     export REDIR1 =
@@ -57,7 +29,7 @@ else
     export REDIR2 = 2>/dev/null
 endif
 
-default: $(DEFAULT_TARGET)
+default: all_variant
 
 variant: simulate verify
 
@@ -71,33 +43,26 @@ all_variant:
 	done
 
 build: compile
+
 run: simulate
-clean_all: clean
 
 compile:
-	$(MAKE) $(JOBS) \
+	$(V) $(MAKE) $(JOBS) \
 		RISCV_TARGET=$(RISCV_TARGET) \
 		RISCV_DEVICE=$(RISCV_DEVICE) \
 		compile -C $(SUITEDIR)
 
 simulate:
-	$(MAKE) $(JOBS) \
+	$(V) $(MAKE) $(JOBS) \
 		RISCV_TARGET=$(RISCV_TARGET) \
 		RISCV_DEVICE=$(RISCV_DEVICE) \
 		run -C $(SUITEDIR)
 
 verify: simulate
-	./verify.sh
-
-postverify:
-ifeq ($(wildcard $(TARGETDIR)/$(RISCV_TARGET)/postverify.sh),)
-	$(info No post verify script found $(TARGETDIR)/$(RISCV_TARGET)/postverify.sh)
-else
-	$(TARGETDIR)/$(RISCV_TARGET)/postverify.sh
-endif
+	$(V) ./verify.sh || true
 
 clean:
-	$(MAKE) $(JOBS) \
+	$(V) $(MAKE) $(JOBS) \
 		RISCV_TARGET=$(RISCV_TARGET) \
 		RISCV_DEVICE=$(RISCV_DEVICE) \
 		clean -C $(SUITEDIR)

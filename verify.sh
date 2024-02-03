@@ -1,6 +1,6 @@
 #!/bin/bash
 
-printf "\n\nCompare to reference files ... \n\n";
+printf "Comparing signatures to reference files ... \n\n";
 FAIL=0
 RUN=0
 

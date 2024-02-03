@@ -30,14 +30,12 @@ endif
 # Build and run assembly tests
 
 %.log: %.elf
-	$(V) echo "Execute $(@)"
 	$(V) $(RUN_TARGET)
 
 
 define compile_template
 
 $(work_dir_isa)/%.elf: $(src_dir)/%.S
-	$(V) echo "Compile $$(@)"
 	@mkdir -p $$(@D)
 	$(V) $(COMPILE_TARGET)
 
@@ -48,8 +46,14 @@ endef
 target_elf = $(foreach e,$(target_tests),$(work_dir_isa)/$(e))
 target_log = $(patsubst %.elf,%.log,$(target_elf))
 
-compile: $(target_elf)
-run: $(target_log)
+compile: compile_echo $(target_elf)
+run: compile run_echo $(target_log)
+
+compile_echo:
+	@ echo "Compiling unit tests in $(SUITEDIR)..."	
+
+run_echo:
+	@ echo "Running unit tests in $(SUITEDIR)..."	
 
 #------------------------------------------------------------
 # Clean up

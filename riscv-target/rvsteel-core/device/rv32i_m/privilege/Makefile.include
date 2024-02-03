@@ -42,7 +42,7 @@ COMPILE_TARGET=                                                         \
 RUN_CMD=                                                               \
   $(TARGET_SIM) --ram-init-h32=$(basename $@).elf.hex                  \
   --ram-dump-h32=$(basename $@).signature.output --cycles=500000       \
-  --wr-addr=0x00001000
+  --wr-addr=0x00001000 --quiet
 
 RUN_TARGET=$(RUN_CMD)
 
