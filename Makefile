@@ -6,7 +6,7 @@ export RISCV_TARGET       ?= rvsteel-core
 export RISCV_DEVICE       ?= I
 export RISCV_TEST         ?= 
 export RISCV_TARGET_FLAGS ?= 
-export JOBS               ?= -j $(nproc)
+export JOBS               ?= -j1
 export SUITEDIR           =  $(ROOTDIR)/riscv-test-suite/rv$(XLEN)i_m/$(RISCV_DEVICE)
 export RVTEST_DEFINES     = 
 MAKEFLAGS                 += --no-print-directory
@@ -31,7 +31,7 @@ endif
 
 default: all_variant
 
-variant: simulate verify
+variant: verilator simulate verify
 
 all_variant:
 	@for isa in $(RISCV_ISA_ALL); do \
@@ -45,6 +45,10 @@ all_variant:
 build: compile
 
 run: simulate
+
+verilator:
+	@echo "Building RISC-V Steel Processor Core IP Simulator..."
+	@$(MAKE) -C riscv-steel/hardware/core/tests/verilator 1>/dev/null 2>/dev/null
 
 compile:
 	$(V) $(MAKE) $(JOBS) \
@@ -66,6 +70,7 @@ clean:
 		RISCV_TARGET=$(RISCV_TARGET) \
 		RISCV_DEVICE=$(RISCV_DEVICE) \
 		clean -C $(SUITEDIR)
+	$(V) $(MAKE) -C riscv-steel/hardware/core/tests/verilator clean
 
 help:
 	@echo "RISC-V Architectural Tests"
