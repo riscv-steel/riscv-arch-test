@@ -10,7 +10,7 @@ RISC-V Steel currently uses the `old-framework-2.x` as its test framework. It wi
 
 This test framework assumes you have the [RISC-V GNU Toolchain] installed in `/opt/riscv`.
 
-- RISC-V Steel [Software Guide] contains instructions on how to install and configure the [RISC-V GNU Toolchain] for RISC-V Steel.
+- RISC-V Steel [Software Guide] contains instructions on how to install and configure the [RISC-V GNU Toolchain].
 
 You will also need [Verilator] version 5.021 or higher. The Verilator binary must be added to your `PATH`.
 
