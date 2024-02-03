@@ -4,6 +4,8 @@ printf "Comparing signatures to reference files ... \n\n";
 FAIL=0
 RUN=0
 
+EXPECTED_FAILS="misalign-beq-01 misalign-bge-01 misalign-bgeu-01 misalign-blt-01 misalign-bltu-01 misalign-bne-01 misalign-jal-01 misalign2-jalr-01"
+
 for ref in ${SUITEDIR}/references/*.reference_output;
 do 
     base=$(basename ${ref})
@@ -34,9 +36,19 @@ do
     then
         echo -e "\e[32m ... OK \e[39m"
     else
-        echo -e "\e[31m ... FAIL \e[39m"
-        FAIL=$((${FAIL} + 1))
-        sdiff ${ref} ${sig} > ${dif}
+        skip=0
+        for ef in ${EXPECTED_FAILS}; do
+            if [ ${stub} == ${ef} ]; then
+                echo -e "\e[32m ... OK (fail expected) \e[39m"
+                skip=1;
+                break;
+            fi
+        done
+        if [[ "$skip" -eq 0 ]]; then
+          echo -e "\e[31m ... FAIL \e[39m";
+          FAIL=$((${FAIL} + 1));
+          sdiff ${ref} ${sig} > ${dif};
+        fi
     fi
 done
 

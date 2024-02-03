@@ -47,7 +47,6 @@ build: compile
 run: simulate
 
 verilator:
-	@echo "Building RISC-V Steel Processor Core IP Simulator..."
 	@$(MAKE) -C riscv-steel/hardware/core/tests/verilator 1>/dev/null 2>/dev/null
 
 compile:
