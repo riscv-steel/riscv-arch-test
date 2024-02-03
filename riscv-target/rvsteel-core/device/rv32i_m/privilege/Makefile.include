@@ -1,8 +1,8 @@
-#TARGET_SIM   ?= <sim runtime>
+TARGET_SIM   ?= $(ROOTDIR)/riscv-steel/hardware/core/tests/verilator/obj_dir/unit_tests
 TARGET_FLAGS ?= $(RISCV_TARGET_FLAGS)
-#ifeq ($(shell command -v $(TARGET_SIM) 2> /dev/null),)
-#    $(error Target simulator executable '$(TARGET_SIM)` not found)
-#endif
+ifeq ($(shell command -v $(TARGET_SIM) 2> /dev/null),)
+    $(error Target simulator executable '$(TARGET_SIM)` not found)
+endif
 
 RISCV_PREFIX   ?= /opt/riscv/bin/riscv32-unknown-elf-
 RISCV_GCC      ?= $(RISCV_PREFIX)gcc
@@ -39,9 +39,10 @@ COMPILE_TARGET=                                                         \
     exit 1 ;                                                            \
   fi ;
 
-RUN_CMD=
-#	$(TARGET_SIM) <sim cmdline args>
+RUN_CMD=                                                               \
+  $(TARGET_SIM) --ram-init-h32=$(basename $@).elf.hex                  \
+  --ram-dump-h32=$(basename $@).signature.output --cycles=500000       \
+  --wr-addr=0x00001000
 
-RUN_TARGET=
-#	$(RUN_CMD)
+RUN_TARGET=$(RUN_CMD)
 

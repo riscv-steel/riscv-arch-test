@@ -57,11 +57,11 @@ declare -i status=0
 if [ ${FAIL} == 0 ]
 then
     echo "--------------------------------"
-    echo -n -e "\e[32m OK: ${RUN}/${RUN} "
+    echo -n -e "\e[32mOK: ${RUN}/${RUN} "
     status=0
 else
     echo "--------------------------------"
-    echo -n -e "\e[31m FAIL: ${FAIL}/${RUN} "
+    echo -n -e "\e[31mFAIL: ${FAIL}/${RUN} "
     status=1
 fi
 echo -e "RISCV_TARGET=${RISCV_TARGET} RISCV_DEVICE=${RISCV_DEVICE} XLEN=${XLEN} \e[39m"
