@@ -1,84 +1,35 @@
+# RISC-V Steel Architecture Tests
 
-# :red_circle: IMPORTANT DISCLAIMER :red_circle:
+This repository contains the unit tests used to verify the correct implementation of the RISC-V specifications by RISC-V Steel Processor Core IP. It is a fork of the [RISC-V Architecture Test] repository with all the required adaptations to run the tests on RISC-V Steel.
 
-The current default branch [master] will be  completely replaced with branch [riscof-dev](https://github.com/riscv-non-isa/riscv-arch-test/tree/riscof-dev) on  **1st MAY 2022**.
-This transition essentially migrates the current framework to the RISCOF framework.
-This provides a much richer and configurable environment for targets to test their compatibility.
-The current framework will be archived and **NO LONGER SUPPORTED AFTER 1st MAY 2022.**
-It is therefore recommended that ALL model/target owners  migrate their targets to the riscof environment ASAP.
-More information on porting your target to RISCOF is available here: https://riscof.readthedocs.io/en/stable/
+RISC-V Steel currently uses the `old-framework-2.x` as its test framework. It will soon move to the newer [RISCOF].
 
-# RISC-V Architecture Test SIG
+## How to run the tests
 
-This is a repository for the work of the RISC-V Foundation Architecture Test SIG. The repository owners are:
+### Pre-requisites
 
-- Neel Gala (InCore Semiconductors)
-- Marc Karasek (Inspire Semiconductors)
+This test framework assumes you have the [RISC-V GNU Toolchain] installed in `/opt/riscv`.
 
-Details of the RISC-V Foundation, the work of its task groups, and how to become a member can be found at [riscv.org](https://riscv.org/).
+- RISC-V Steel [Software Guide] contains instructions on how to install and configure the [RISC-V GNU Toolchain] for RISC-V Steel.
 
-For more details and documentation on the current testing framework see: [doc/README.adoc](doc/README.adoc)
+You will also need [Verilator] version 5.021 or higher. The Verilator binary must be added to your `PATH`.
 
-For more details on the test format spec see: [spec/TestFormatSpec.adoc](spec/TestFormatSpec.adoc)
+- You find the steps to install the latest version of [Verilator] in its [Documentation] webpage.
 
-For contributions and reporting issues please refer to [CONTRIBUTION.md](CONTRIBUTION.md)
+### Instructions
 
+Once you have the pre-requisites installed, run from a terminal:
 
-## Test Disclaimers
-
-The following are the exhaustive list of disclaimers that can be used as waivers by target owners 
-when reporting the status of pass/fail on the execution of the architectural suite on their respective targets.
-
-1. The references uploaded for the following misaligned load/store tests will match targets which do 
-   not support misaligned load/stores in hardware. Targets with hardware misaligned support for 
-   load/stores will fail these tests.
-
-   1. rv32i_m/privilege/src/misalign-[lb[u],lh[u],lw,sh,sb,sw]-01.S
-   2. rv64i_m/privilege/src/misalign-[lb[u],lh[u],lw[u],ld,sb,sh,sw,sd]-01.S
-
-2. The references uploaded for the following misaligned instruction tests will match targets which 
-   have compressed extension support enabled by default. Targets without the compressed extension 
-   support will fail the following tests:
-   1. rv[32/64]i_m/privilege/src/misalign-b[ge[u],lt[u],eq,ne]-01.S
-   2. rv[32/64]i_m/privilege/src/misalign2-jalr-01.S
-
-3. The machine mode trap handler used in the privilege tests assumes one of the following conditions. 
-   Targets not satisfying any of the following conditions are bound to fail the entire 
-   rv32i_m/privilege and rv64i_m/privilege tests:
-   1. The target must have implemented mtvec which is completely writable by the test in machine mode.
-   2. The target has initialized mtvec, before entering the test (via RVMODEL_BOOT), to point to a memory location which has both read and write permissions.
-
-## Contribution process
-
-Please refer to to [CONTRIBUTION.md](CONTRIBUTION.md) for guidelines on contributions.
-
-## Licensing
-
-In general:
-- code is licensed under one of the following:
-  - the BSD 3-clause license (SPDX license identifier `BSD-3-Clause`);
-  - the Apache License (SPDX license identifier `Apache-2.0`); while
-- documentation is licensed under the Creative Commons Attribution 4.0 International license (SPDX license identifier `CC-BY-4.0`).
-
-The files [`COPYING.BSD`](./COPYING.BSD), [`COPYING.APACHE`](./COPYING.APACHE) and [`COPYING.CC`](./COPYING.CC) in the top level directory contain the complete text of these licenses.
-
-## Engineering practice
-
-- Documentation uses the structured text format _AsciiDoc_.  See [`doc/README.adoc`](doc/README.adoc) for more details.
-
-- Some directories use `ChangeLog` files to track changes in the code and documentation.  Please honor these, keeping them up to date and including the ChangeLog entry in the _git_ commit message.
-
-- Please include a comment with the SPDX license identifier in all source files, for example:
 ```
-// SPDX-License-Identifier: BSD-3-Clause
+git clone https://github.com/riscv-steel/riscv-arch-test
+cd riscv-arch-test
+git submodule update --init
+make
 ```
 
-## Quick Links:
-
-- RISCOF \[[DOCS](https://riscof.readthedocs.io/en/latest/)\] \[[REPO](https://github.com/riscv-software-src/riscof)\]: This is the next version of the architectural test framework currently under development
-- RISCV-ISAC \[[DOCS](https://riscv-isac.readthedocs.io/en/latest/index.html)\] \[[REPO](https://github.com/riscv-software-src/riscv-isac)\] : This is an ISA level coverage extraction tool for RISC-V which used to generate the coverage statistics of the architectural tests.
-- RISCV-CTG: \[[DOCS](https://riscv-ctg.readthedocs.io/en/latest/index.html)\]\[[REPO](https://github.com/riscv-software-src/riscv-ctg)\]: This is a RISC-V Architectural Test generator used to generate some of the tests already checked into this repository.
-- [Videos](https://youtu.be/VIW1or1Oubo): This Global Forum 2020 video provides an introduction to the above mentioned tools
-- [riscvOVPsim](https://github.com/riscv-ovpsim/imperas-riscv-tests): Imperas freeware RISC-V reference simulator for compliance testing
-- [riscvOVPsimPlus](https://www.ovpworld.org/riscvOVPsimPlus/): Imperas enhanced freeware RISC-V reference simulator for test development and verification
-
+[RISC-V Architecture Test]: https://github.com/riscv-non-isa/riscv-arch-test
+[RISCOF]: https://riscof.readthedocs.io/en/stable/
+[RISC-V GNU Toolchain]: https://github.com/riscv-collab/riscv-gnu-toolchain
+[Software Guide]: https://riscv-steel.github.io/riscv-steel/software_guide/
+[Verilator]: https://veripool.org/guide/latest/install.html
+[Documentation]: https://veripool.org/guide/latest/install.html
