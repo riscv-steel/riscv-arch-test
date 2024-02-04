@@ -71,6 +71,9 @@ clean:
 		clean -C $(SUITEDIR)
 	$(V) $(MAKE) -C riscv-steel/hardware/core/tests/verilator clean
 
+install:
+	$(V) ./install.sh || true
+
 help:
 	@echo "RISC-V Architectural Tests"
 	@echo ""
