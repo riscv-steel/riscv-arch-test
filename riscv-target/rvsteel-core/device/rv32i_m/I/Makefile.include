@@ -39,10 +39,10 @@ COMPILE_TARGET=                                                         \
     exit 1 ;                                                            \
   fi ;
 
-RUN_CMD=                                                               \
-  $(TARGET_SIM) --ram-init-h32=$(basename $@).elf.hex                  \
-  --ram-dump-h32=$(basename $@).signature.output --cycles=500000       \
-  --wr-addr=0x00001000 --quiet
+RUN_CMD=                                                                \
+  $(TARGET_SIM) --log-level=QUIET --ram-init-h32=$(basename $@).elf.hex \
+  --ram-dump-h32=$(basename $@).signature.output --cycles=500000        \
+  --wr-addr=0x00001000
 
 RUN_TARGET=$(RUN_CMD)
 
